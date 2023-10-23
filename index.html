@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Supply Chain Management</title>
+</head>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Orbitron&display=swap">
+<body>
+    <link rel="stylesheet" href="style.css">
+    <h1>Supply Chain Management</h1>
+
+    <label for="productId">Product ID:</label>
+    <input type="number" id="productId">
+    <button onclick="getProduct()">Get Product</button>
+    <p id="productInfo"></p>
+
+    <hr>
+
+    <h2>Add Product</h2>
+    <label for="name">Product Name:</label>
+    <input type="text" id="name">
+    <label for="price">Price:</label>
+    <input type="number" id="price">
+    <label for="quantity">Quantity:</label>
+    <input type="number" id="quantity">
+    <button onclick="addProduct()">Add Product</button>
+
+    <script src="app.js"></script>
+    <script>
+        const contractAddress = '0xDA0bab807633f07f013f94DD0E6A4F96F8742B53';
+        const contractABI = [
+            // ABI of your Solidity contract
+        ];
+
+        const web3 = new Web3('YOUR_BLOCKCHAIN_NODE_URL');
+        const contract = new web3.eth.Contract(contractABI, contractAddress);
+
+        async function getProduct() {
+            const productId = document.getElementById("productId").value;
+            const result = await contract.methods.getProduct(productId).call();
+            document.getElementById("productInfo").innerText = `Name: ${result[0]}, Price: ${result[1]}, Quantity: ${result[2]}`;
+        }
+
+        async function addProduct() {
+            const name = document.getElementById("name").value;
+            const price = document.getElementById("price").value;
+            const quantity = document.getElementById("quantity").value;
+
+            const accounts = await web3.eth.getAccounts();
+            await contract.methods.addProduct(name, price, quantity).send({ from: accounts[0] });
+        }
+    </script>
+</body>
+</html>
